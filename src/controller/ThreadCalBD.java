@@ -20,17 +20,7 @@ public class ThreadCalBD extends Thread {
 			esperaTransacao = 100;
 			for (int i = 0; i < 2; i++) {
 				calculando(esperaCal);
-				// INICIO SECAO CRITICA
-				System.out.println("#" + id + " entrando em secao critica");
-				try {
-					mutex.acquire();
-					transacaoBD(esperaTransacao);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				} finally {
-					mutex.release();
-					// FIM DA SECAO CRITICA
-				}
+				semaforo(esperaTransacao);
 			}
 		} else {
 			if (id % 3 == 2) {
@@ -38,17 +28,7 @@ public class ThreadCalBD extends Thread {
 				esperaTransacao = 1500;
 				for (int i = 0; i < 2; i++) {
 					calculando(esperaCal);
-					// INICIO SECAO CRITICA
-					System.out.println("#" + id + " entrando em secao critica");
-					try {
-						mutex.acquire();
-						transacaoBD(esperaTransacao);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					} finally {
-						mutex.release();
-						// FIM DA SECAO CRITICA
-					}
+					semaforo(esperaTransacao);
 				}
 			} else {
 				if (id % 3 == 0) {
@@ -56,17 +36,7 @@ public class ThreadCalBD extends Thread {
 					esperaTransacao = 1500;
 					for (int i = 0; i < 2; i++) {
 						calculando(esperaCal);
-						// INICIO SECAO CRITICA
-						System.out.println("#" + id + " entrando em secao critica");
-						try {
-							mutex.acquire();
-							transacaoBD(esperaTransacao);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						} finally {
-							mutex.release();
-							// FIM DA SECAO CRITICA
-						}
+						semaforo(esperaTransacao);
 					}
 				}
 			}
@@ -88,6 +58,19 @@ public class ThreadCalBD extends Thread {
 			sleep(espera);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
+		}
+	}
+
+	private void semaforo(int esperaTransacao) {
+		System.out.println("#" + id + " entrando em secao critica");
+		try {
+			mutex.acquire();
+			transacaoBD(esperaTransacao);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} finally {
+			mutex.release();
+			// FIM DA SECAO CRITICA
 		}
 	}
 }
